@@ -126,6 +126,7 @@ const TypeImages = (p: Pokemon) => {
                 alt={pokemon.name}
                 className="mt-4 w-32 h-32"
             />
+            <p>ll</p>
         </div>
     );
 };
