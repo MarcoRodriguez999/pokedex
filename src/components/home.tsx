@@ -1,13 +1,18 @@
 import React, { useContext, useState } from "react";
 import { PokemonContext } from "../context/pokemonContext";
+import { useNavigate } from "react-router-dom";
 
 const Home: React.FC = () => {
   const { pokemonList, loading } = useContext(PokemonContext);
   const [query, setQuery] = useState("");
+  const navigate = useNavigate();
 
   const filtered = pokemonList.filter((pokemon) =>
     pokemon.name.toLowerCase().includes(query.toLowerCase())
   );
+  const handleClick = (id: number) =>{
+    navigate(`/details/${id}`);
+  }
 
 
   return (
@@ -39,6 +44,7 @@ const Home: React.FC = () => {
             {filtered.length > 0 ? (
               filtered.map((p) => (
                 <li
+                  onClick={() => handleClick(p.id)}
                   key={p.id} 
                   className="p-2 flex items-center gap-3 hover:bg-gray-100 rounded-md cursor-pointer capitalize"
                 >
