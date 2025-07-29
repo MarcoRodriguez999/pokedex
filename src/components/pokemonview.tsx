@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface Pokemon {
   id: number;
@@ -8,6 +8,7 @@ interface Pokemon {
   weight: number;
   types: string[];
   ability: string;
+  description: string;
 }
 
 const PokemonView: React.FC = () => {
@@ -15,6 +16,9 @@ const PokemonView: React.FC = () => {
   const id = Number(stringId);
   const [pokemon, setPokemon] = useState<Pokemon | null>(null);
   const [loading, setLoading] = useState(true);
+  const [viewButton, setViewButton] = useState("Frontal");
+
+  const navigate = useNavigate();
 
   const getTypeIconUrl = (type: string): string => {
     switch (type.toLowerCase()) {
@@ -57,102 +61,153 @@ const PokemonView: React.FC = () => {
     }
   };
 
-  const TypeImages = (p: Pokemon) => {
-    return (
-      <>
-        {p.types.map((tipo) => (
-          <img
-            key={tipo}
-            src={getTypeIconUrl(tipo)}
-            alt={tipo}
-            title={tipo}
-            className="w-20 h-20 inline-block"
-          />
-        ))}
-      </>
-    );
+  const ReverseButton = () => {
+    setViewButton((prev) => (prev === "Frontal" ? "Posterior" : "Frontal"));
   };
+
+  const TypeImages = (p: Pokemon) => (
+    <>
+      {p.types.map((tipo) => (
+        <img
+          key={tipo}
+          src={getTypeIconUrl(tipo)}
+          alt={tipo}
+          title={tipo}
+          className="m-1 w-8 h-8 inline-block"
+        />
+      ))}
+    </>
+  );
+
+  const imageUrl =
+    viewButton === "Frontal"
+      ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/${id}.gif`
+      : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/back/${id}.gif`;
 
   useEffect(() => {
     const fetchPokemonDetails = async () => {
       setLoading(true);
       try {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-        if (!response.ok) {
-          throw new Error("Error al cargar los datos del pokemon");
-        }
+        if (!response.ok)
+          throw new Error("Error al cargar los datos del Pokémon");
         const data = await response.json();
+
+        const speciesResponse = await fetch(
+          `https://pokeapi.co/api/v2/pokemon-species/${id}`
+        );
+        if (!speciesResponse.ok) throw new Error("Error al cargar la especie");
+        const speciesData = await speciesResponse.json();
+
+        const spanishName =
+          speciesData.names.find(
+            (n: { language: { name: string }; name: string }) =>
+              n.language.name === "es"
+          )?.name ?? data.name;
+
+        const spanishDescription =
+          speciesData.flavor_text_entries
+            .find(
+              (entry: { language: { name: string }; flavor_text: string }) =>
+                entry.language.name === "es"
+            )
+            ?.flavor_text.replace(/[\n\f]/g, " ") ??
+          "Sin descripción disponible.";
+
+        const abilityUrl = data.abilities[0].ability.url;
+        const abilityRes = await fetch(abilityUrl);
+        const abilityData = await abilityRes.json();
+        const spanishAbility =
+          abilityData.names.find(
+            (entry: { language: { name: string }; name: string }) =>
+              entry.language.name === "es"
+          )?.name ?? data.abilities[0].ability.name;
+
         const PokemonData: Pokemon = {
           id: data.id,
-          name: data.name,
+          name: spanishName,
           height: data.height,
           weight: data.weight,
-          types: data.types.map(
-            (type: { type: { name: string } }) => type.type.name
-          ),
-          ability: data.abilities[0].ability.name,
+          types: data.types.map((t: { type: { name: string } }) => t.type.name),
+          ability: spanishAbility,
+          description: spanishDescription,
         };
+
         setPokemon(PokemonData);
       } catch (error) {
-        console.error("Error fetching Pokemon details:", error);
+        console.error("Error:", error);
         setPokemon(null);
       } finally {
         setLoading(false);
       }
     };
+
     fetchPokemonDetails();
   }, [id]);
 
-  if (loading) {
-    return <div className="text-center">Cargando...</div>;
-  }
-
-  if (!pokemon) {
-    return <div className="text-center">Pokemon no encontrado</div>;
-  }
+  if (loading) return <div className="text-center">Cargando...</div>;
+  if (!pokemon) return <div className="text-center">Pokémon no encontrado</div>;
 
   return (
     <div
-      className="min-h-screen w-full flex items-center justify-center bg-gray-100"
+      className="min-h-screen flex items-center justify-center bg-gray-100 bg-center px-4"
       style={{
         backgroundImage:
           "url('https://cdn.wallpapersafari.com/98/7/Iu9XxP.jpg')",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
       }}
     >
-      <div className="p-6 bg-white shadow-lg rounded-2xl w-full max-w-3xl mx-4">
-        <h1 className="text-4xl font-bold mb-4 capitalize text-center">
-          {pokemon.name}
-        </h1>
-        <p className="text-gray-700 text-lg">
-          <strong>N°: </strong> {pokemon.id}
-        </p>
-        <p className="text-gray-700 text-lg">
-          <strong>Altura:</strong> {pokemon.height / 10} m
-        </p>
-        <p className="text-gray-700 text-lg">
-          <strong>Peso:</strong> {pokemon.weight / 10} kg
-        </p>
-        <p className="text-gray-700 text-lg font-italic">
-          Habilidad: {pokemon.ability}
-        </p>
-        <div className="text-gray-700 mb-4 flex items-center justify-center gap-2 mt-2">
-          <span className="font-semibold">Tipos:</span>
-          <TypeImages {...pokemon} />
+      <div className="w-[90%] sm:w-[80%] md:w-[70%] mx-auto my-6 bg-orange-100 border-4 border-orange-300 rounded-lg font-mono shadow-lg">
+        <div className="bg-yellow-200 px-4 py-2 flex justify-between items-center border-b-4 border-yellow-400">
+          <h2 className="text-gray-800 font-bold text-sm">
+            INFORMACIÓN POKÉMON
+          </h2>
         </div>
-        <div className="flex justify-center">
-          <img
-            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/${pokemon.id}.gif`}
-            alt={pokemon.name}
-            className="mt-4 w-80 h-80"
-          />
-          <img
-            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/back/${pokemon.id}.gif`}
-            alt={pokemon.name}
-            className="mt-4 w-80 h-80"
-          />
+
+        <div className="flex flex-col md:flex-row p-4 gap-4">
+          {/* Imagen y botón */}
+          <div className="bg-white border-2 border-gray-300 rounded-md flex items-center justify-center mx-auto md:mx-0 w-full md:w-48 h-auto">
+            <div className="w-full p-4 rounded shadow">
+              <img
+                src={imageUrl}
+                alt={pokemon.name}
+                className="object-contain w-full max-w-[160px] h-auto mx-auto"
+              />
+              <button
+                onClick={ReverseButton}
+                className="mt-2 w-full px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
+              >
+                {viewButton === "Frontal" ? "Ver Posterior" : "Ver Frontal"}
+              </button>
+            </div>
+          </div>
+
+          {/* Datos del Pokémon */}
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-2 text-sm">
+            <span className="font-bold">Nº:</span>
+            <span className="bg-gray-200 rounded px-2 py-0.5">
+              {pokemon.id.toString().padStart(3, "0")}
+            </span>
+            <span className="font-bold">NOMBRE:</span>
+            <span className="bg-gray-200 rounded px-2 py-0.5 uppercase">
+              {pokemon.name.toUpperCase()}
+            </span>
+            <span className="font-bold">ALTURA:</span>
+            <span>{pokemon.height / 10} M</span>
+            <span className="font-bold">PESO:</span>
+            <span>{pokemon.weight / 10} KG</span>
+            <span className="font-bold">TIPO/s:</span>
+            <span className="flex flex-wrap">{TypeImages(pokemon)}</span>
+            <span className="font-bold">HABILIDAD:</span>
+            <span className="bg-gray-200 rounded px-2 py-0.5">
+              {pokemon.ability}
+            </span>
+          </div>
+        </div>
+
+        {/* Descripción */}
+        <div className="bg-white border-t-4 border-orange-300 p-3 text-sm leading-snug">
+          <span className="font-bold">Descripción: </span>
+          <span>{pokemon.description}</span>
         </div>
       </div>
     </div>
