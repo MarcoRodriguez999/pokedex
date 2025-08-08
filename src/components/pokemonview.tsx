@@ -145,7 +145,7 @@ const PokemonView: React.FC = () => {
     fetchPokemonDetails();
   }, [id]);
 
-  if (loading) return <div className="text-center">Cargando...</div>;
+  if (loading) return <div className="text-center">Cargando</div>;
   if (!pokemon) return <div className="text-center">Pokémon no encontrado</div>;
 
   return (
