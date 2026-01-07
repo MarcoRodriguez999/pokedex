@@ -161,6 +161,14 @@ const PokemonView: React.FC = () => {
           <h2 className="text-gray-800 font-bold text-sm">
             INFORMACIÓN POKÉMON
           </h2>
+          <button
+            className="border-2 bg-coral px-3 py-1 rounded hover:bg-yellow-100"
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            Volver
+          </button>
         </div>
 
         <div className="flex flex-col md:flex-row p-4 gap-4">

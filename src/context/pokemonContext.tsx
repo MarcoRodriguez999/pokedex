@@ -33,7 +33,7 @@ export const PokeProvider: React.FC<{ children: React.ReactNode }> = ({
     setLoading(true);
     try {
       const res = await fetch(
-        "https://pokeapi.co/api/v2/pokemon?limit=386&offset=0"
+        `https://pokeapi.co/api/v2/pokemon?limit=${Pokelimit}&offset=0`
       );
       if (!res.ok) {
         throw new Error(`Error HTTP: ${res.status}`);
