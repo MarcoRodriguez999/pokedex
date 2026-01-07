@@ -1,69 +1,118 @@
-# React + TypeScript + Vite
+# Pokédex
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Una aplicación web moderna para explorar y buscar información sobre Pokémon. Desarrollada con React, TypeScript y Vite, ofrece una experiencia de usuario rápida y fluida con estilos modernos gracias a Tailwind CSS.
 
-Currently, two official plugins are available:
+## Características
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Búsqueda de Pokémon**: Filtra y busca tus Pokémon favoritos en tiempo real
+- **Vista detallada**: Accede a información completa de cada Pokémon
+- **Interfaz responsiva**: Diseño adaptable a diferentes tamaños de pantalla
+- **Rendimiento optimizado**: Construcción con Vite para carga rápida
+- **Type-safe**: Desarrollado con TypeScript para mayor seguridad de tipos
 
-## Expanding the ESLint configuration
+## Stack Tecnológico
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **React 19**: Framework UI moderna
+- **TypeScript**: Tipado estático para JavaScript
+- **Vite 7**: Build tool rápido y moderno
+- **React Router DOM 7**: Enrutamiento entre páginas
+- **Tailwind CSS 4**: Utilidades CSS para diseño
+- **ESLint**: Linting y análisis de código
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Requisitos Previos
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- Node.js (versión 16 o superior)
+- npm o yarn
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Instalación y Uso
+
+### 1. Clonar el repositorio
+
+```bash
+git clone [URL_del_repositorio]
+cd pokedex
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Instalar dependencias
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
+
+### 3. Ejecutar en desarrollo
+
+```bash
+npm run dev
+```
+
+La aplicación estará disponible en `http://localhost:5173`
+
+### 4. Construir para producción
+
+```bash
+npm run build
+```
+
+### 5. Vista previa de producción
+
+```bash
+npm run preview
+```
+
+### 6. Lint del código
+
+```bash
+npm run lint
+```
+
+## Estructura del Proyecto
+
+```
+src/
+├── components/           # Componentes React
+│   ├── home.tsx         # Página principal con búsqueda
+│   └── pokemonview.tsx  # Vista detallada del Pokémon
+├── context/             # Contexto de React
+│   └── pokemonContext.tsx # Estado global de Pokémon
+├── assets/              # Recursos estáticos
+├── App.tsx              # Componente principal
+├── main.tsx             # Punto de entrada
+├── index.css            # Estilos globales
+└── vite-env.d.ts        # Tipos de Vite
+```
+
+## Configuración
+
+- **TypeScript**: Configurado en `tsconfig.json`
+- **Vite**: Configurado en `vite.config.ts`
+- **ESLint**: Configurado en `eslint.config.js`
+
+## Componentes Principales
+
+### Home (`home.tsx`)
+
+Página de inicio donde puedes:
+
+- Buscar Pokémon por nombre
+- Ver lista filtrada de resultados
+- Navegar a la vista detallada
+
+### PokemonView (`pokemonview.tsx`)
+
+Página de detalles que muestra:
+
+- Información completa del Pokémon
+- Estadísticas y atributos
+- Navegación de vuelta a la lista
+
+## Datos
+
+Los datos de Pokémon se obtienen a través de la [PokéAPI](https://pokeapi.co/), una API REST abierta y gratuita con información completa sobre Pokémon.
+
+## Desarrollador
+
+Proyecto personal de exploración y práctica con React, TypeScript y Vite.
+
+## Licencia
+
+Este proyecto es de código abierto bajo la licencia MIT.
