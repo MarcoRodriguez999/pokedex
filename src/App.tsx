@@ -1,7 +1,6 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './components/home';
-import PokemonView from './components/pokemonview';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./components/home";
+import PokemonView from "./components/pokemonview";
 
 function App() {
   return (
@@ -15,4 +14,3 @@ function App() {
 }
 
 export default App;
-
